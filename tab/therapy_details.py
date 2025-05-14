@@ -8,7 +8,7 @@ from PyQt6.QtGui import (
     QStandardItemModel,
 )
 
-class TherapyTab(QWidget):
+class TherapyDetailsTab(QWidget):
     def __init__(self):
         super().__init__()
 

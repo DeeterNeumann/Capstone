@@ -17,7 +17,7 @@ class SideEffectsTab(QWidget):
             'patient_id', 
             'side_effect_id',
             'therapy_id',
-            'type', 
+            'side_effect_type', 
             'grade',
             'onset_date',
             'resolution_date',

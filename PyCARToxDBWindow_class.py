@@ -23,13 +23,13 @@ from PyQt6.QtGui import (
     QStandardItem
 )
 
-from tab_patient_id import PatientIdTab
-from tab_diagnosis import DiagnosisTab
-from tab_car_product import CARProductTab
-from tab_therapy import TherapyTab
-from tab_side_effects import SideEffectsTab
-from tab_lab_values import LabValuesTab
-from tab_outcomes import OutcomesTab
+from tab.patient_id import PatientIdTab
+from tab.diagnosis import DiagnosisTab
+from tab.car_product import CARProductTab
+from tab.therapy_details import TherapyDetailsTab
+from tab.side_effects import SideEffectsTab
+from tab.lab_values import LabValuesTab
+from tab.outcomes import OutcomesTab
 
 class PyCARToxDBWindow(QMainWindow):
     """PyCARToxDB's main window."""
@@ -51,7 +51,7 @@ class PyCARToxDBWindow(QMainWindow):
         self.tab_widget.addTab(PatientIdTab(), "Patient Data")
         self.tab_widget.addTab(DiagnosisTab(), "Diagnosis")
         self.tab_widget.addTab(CARProductTab(), "Product Info")
-        self.tab_widget.addTab(TherapyTab(), "Therapy Details")
+        self.tab_widget.addTab(TherapyDetailsTab(), "Therapy Details")
         self.tab_widget.addTab(SideEffectsTab(), "Side Effects")
         self.tab_widget.addTab(LabValuesTab(), "Lab Values")
         self.tab_widget.addTab(OutcomesTab(), "Outcomes")
@@ -90,3 +90,11 @@ if __name__ == "__main__":
     # window.show()
     main()
     # sys.exit(app.exec())
+
+
+
+# Set cells to read only
+# Create state in page - everything disabled unless clicking edit button
+
+# SQL server may not be the best
+# SQLite - local file base
