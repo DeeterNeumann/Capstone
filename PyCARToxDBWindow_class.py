@@ -6,6 +6,7 @@ from PyCARToxDB_constants import (
 )
 
 import sys
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -16,7 +17,8 @@ from PyQt6.QtWidgets import (
     QWidget,
     QStatusBar,
     # QToolBar,
-    QTabWidget
+    QTabWidget,
+    QDialog
 )
 from PyQt6.QtGui import (
     QStandardItemModel,
@@ -30,6 +32,8 @@ from tab.therapy_details import TherapyDetailsTab
 from tab.side_effects import SideEffectsTab
 from tab.lab_values import LabValuesTab
 from tab.outcomes import OutcomesTab
+
+from controller.patient_controller import AddPatient
 
 class PyCARToxDBWindow(QMainWindow):
     """PyCARToxDB's main window."""
@@ -48,13 +52,21 @@ class PyCARToxDBWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
 
-        self.tab_widget.addTab(PatientIdTab(), "Patient Data")
-        self.tab_widget.addTab(DiagnosisTab(), "Diagnosis")
-        self.tab_widget.addTab(CARProductTab(), "Product Info")
-        self.tab_widget.addTab(TherapyDetailsTab(), "Therapy Details")
-        self.tab_widget.addTab(SideEffectsTab(), "Side Effects")
-        self.tab_widget.addTab(LabValuesTab(), "Lab Values")
-        self.tab_widget.addTab(OutcomesTab(), "Outcomes")
+        self.patient_id = PatientIdTab(status_bar=self.status)
+        self.diagnosis = DiagnosisTab()
+        self.car_product = CARProductTab()
+        self.therapy = TherapyDetailsTab()
+        self.side_effects = SideEffectsTab()
+        self.labs = LabValuesTab()
+        self.outcomes = OutcomesTab()
+
+        self.tab_widget.addTab(self.patient_id, "Patient Data")
+        self.tab_widget.addTab(self.diagnosis, "Diagnosis")
+        self.tab_widget.addTab(self.car_product, "Product Info")
+        self.tab_widget.addTab(self.therapy, "Therapy Details")
+        self.tab_widget.addTab(self.side_effects, "Side Effects")
+        self.tab_widget.addTab(self.labs, "Lab Values")
+        self.tab_widget.addTab(self.outcomes, "Outcomes")
 
     def _createDisplay(self):
         self.display = QTableView()
@@ -66,6 +78,7 @@ class PyCARToxDBWindow(QMainWindow):
     def _createMenu(self):
         menu = self.menuBar().addMenu("&Menu")
         menu.addAction("&Exit", self.close)
+        menu.addAction("&Add Patient", self.open_add_patient_dialog)
 
     # def _createToolBar(self):
     #     tools = QToolBar()
@@ -73,9 +86,14 @@ class PyCARToxDBWindow(QMainWindow):
     #     self.addToolBar(tools)
 
     def _createStatusBar(self):
-        status = QStatusBar()
-        status.showMessage("Status Bar")
-        self.setStatusBar(status)
+        self.status = QStatusBar()
+        self.status.showMessage("Status Bar")
+        self.setStatusBar(self.status)
+
+    def open_add_patient_dialog(self):
+        dialog = AddPatient()
+        dialog.patient_added.connect(self.patient_id.refresh_model)
+        dialog.exec()
 
 def main():
     """PyCARToxDB's main function."""
@@ -85,16 +103,4 @@ def main():
     sys.exit(pycarApp.exec())
     
 if __name__ == "__main__":
-    # app = QApplication([])
-    # window = PyCARToxDBWindow()
-    # window.show()
     main()
-    # sys.exit(app.exec())
-
-
-
-# Set cells to read only
-# Create state in page - everything disabled unless clicking edit button
-
-# SQL server may not be the best
-# SQLite - local file base

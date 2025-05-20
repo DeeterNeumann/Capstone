@@ -1,9 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float
-from sqlalchemy.orm import relationship, backref
-# from sqlalchemy.ext.declarative import declarative_base
-from models import Base
-
-# Base = declarative_base()
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float, insert
+from sqlalchemy.orm import relationship, backref, sessionmaker
+from database.database_connection import Base, engine
 
 class PatientData(Base):
     __tablename__ = "Patient_Data"
@@ -11,7 +8,5 @@ class PatientData(Base):
     mrn = Column(String)
     first_name = Column(String)
     last_name = Column(String)
-    dob = Column(Integer)
+    dob = Column(String)
     sex = Column(String)
-    diagnosis_id = Column(Integer)
-
