@@ -11,13 +11,13 @@ from PyQt6.QtGui import (
 
 from sqlalchemy.orm import sessionmaker
 from database.database_connection import engine
-from model.therapy_model import TherapyDetails
+from model.tx_history_model import TreatmentHistory
 
-class TherapyDetailsTab(QWidget):
+class TxHistoryTab(QWidget):
     def __init__(self, status_bar=None):
         super().__init__()
 
-        self.therapy_details = []
+        self.tx_history = []
         Session = sessionmaker(bind=engine)
         self.session = Session()
 
@@ -25,11 +25,10 @@ class TherapyDetailsTab(QWidget):
 
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels([
-            'therapy_id',
-            'product_id',
-            'infusion_date',
-            'lymphodepletion_regimen',
-            'cell_dose'
+            "history_id",
+            'patient_id',
+            'treatment_regimen',
+            'time_before_CAR'
         ])
         self.table = QTableView()
         self.table.setModel(self.model)
@@ -44,16 +43,15 @@ class TherapyDetailsTab(QWidget):
         self.model.itemChanged.connect(self.handle_edit)
 
     def db_load_data(self):
-        self.therapy_details = self.session.query(TherapyDetails).all()
-        self.therapy_details_lookup = {therapy_detail.therapy_id: therapy_detail for therapy_detail in self.therapy_details}
+        self.tx_histories = self.session.query(TreatmentHistory).all()
+        self.tx_history_lookup = {tx_history.history_id: tx_history for tx_history in self.tx_histories}
 
-        for therapy_detail in self.therapy_details:
+        for tx_history in self.tx_histories:
             items = [
-                QStandardItem(str(therapy_detail.therapy_id)),
-                QStandardItem(str(therapy_detail.product_id)),
-                QStandardItem(therapy_detail.infusion_date),
-                QStandardItem(therapy_detail.lymphodepletion_regimen),
-                QStandardItem(str(therapy_detail.cell_dose))
+                QStandardItem(str(tx_history.history_id)),
+                QStandardItem(str(tx_history.patient_id)),
+                QStandardItem(tx_history.treatment_regimen),
+                QStandardItem(str(tx_history.time_before_CAR))
             ]
 
             for item in items:
@@ -68,49 +66,47 @@ class TherapyDetailsTab(QWidget):
             return
         
         field_map = {
-            1: "product_id",
-            2: "infusion_date",
-            3: "lymphodepletion_regimen",
-            4: "cell_dose",
+            1: "patient_id",
+            2: "treatment_regimen",
+            3: "time_before_CAR"
         }
 
         field_name = field_map.get(col)
         if field_name is None:
             return
-
-        therapy_id_item = self.model.item(row, 0)
-        if not therapy_id_item:
+        
+        history_id_item = self.model.item(row, 0)
+        if not history_id_item:
             return
         
-        therapy_id = int(therapy_id_item.text())
-        therapy_detail = self.therapy_details_lookup.get(therapy_id)
-        
-        if not therapy_detail:
-            print(f"Therapy details for {therapy_id} not found.")
+        history_id = int(history_id_item.text())
+        tx_history = self.tx_history_lookup.get(history_id)
+
+        if not tx_history:
+            print(f"Treatment History with ID {history_id} not found.")
             return
         
         new_value = item.text()
 
-        if getattr(therapy_detail, field_name) != new_value:
-            setattr(therapy_detail, field_name, new_value)
+        if getattr(tx_history,field_name) != new_value:
+            setattr(tx_history, field_name, new_value)
             try:
                 self.session.commit()
 
                 if self.status_bar:
-                    self.status_bar.showMessage(f"Change saved to Therapy details '{therapy_id}': '{field_name}'", 5000)
-                print(f"Committed {field_name} = {new_value} for {therapy_id}")
+                    self.status_bar.showMessage(f"Change saved to History ID {history_id}: '{field_name}'", 5000)
+
+                print(f"Committed {field_name} = {new_value} for History ID {history_id}")
             except Exception as e:
                 self.session.rollback()
                 print(f"Failed to save change: {e}")
 
-
     def refresh_model(self):
         self.model.clear()
         self.model.setHorizontalHeaderLabels([
-            "therapy_id",
-            "product_id",
-            "infusion_date",
-            "lymphodepletion_regimen",
-            "cell_dose",
+            "history_id",
+            "patient_id",
+            "treatment_regimen",
+            "time_before_CAR"
         ])
         self.db_load_data()

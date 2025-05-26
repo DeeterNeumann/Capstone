@@ -99,9 +99,10 @@ class PatientIdTab(QWidget):
             setattr(patient, field_name, new_value)
             try:
                 self.session.commit()
-
+                
                 if self.status_bar:
                     self.status_bar.showMessage(f"Change saved to Patient ID '{patient_id}': '{field_name}'", 5000)
+                    
                 print(f"Committed {field_name} = {new_value} for Patient ID {patient_id}")
             except Exception as e:
                 self.session.rollback()
@@ -110,6 +111,11 @@ class PatientIdTab(QWidget):
     def refresh_model(self):
         self.model.clear()
         self.model.setHorizontalHeaderLabels([
-            'patient_id', 'mrn', 'first_name', 'last_name', 'dob', 'sex'
+            "patient_id",
+            "mrn",
+            "first_name",
+            "last_name",
+            "dob",
+            "sex"
         ])
         self.db_load_data()
