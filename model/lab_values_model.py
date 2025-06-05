@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, backref
 from database.database_connection import Base, engine
 from model.patient_model import PatientData
 
-### LabValues is a One-to-Many Relationship (each patient can have many lab values, but each lab order belongs to one patient)
+
 class LabValues(Base):
     __tablename__ = "Lab_Values"
     lab_id = Column(Integer, primary_key = True)
