@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, backref, sessionmaker
 from database.database_connection import Base, engine
 
 class SideEffects(Base):
-    __tablename__ = "Side Effects"
+    __tablename__ = "Side_Effects"
     side_effect_id = Column(Integer, primary_key=True)
     patient_id = Column(Integer)
     therapy_id = Column(Integer)

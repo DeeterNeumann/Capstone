@@ -7,23 +7,33 @@ from PyCARToxDB_constants import (
 
 import sys
 
+from datetime import date
+
 from PyQt6.QtCore import Qt
+
 from PyQt6.QtWidgets import (
+    QPushButton,
     QApplication,
+    QInputDialog,
     QLabel,
     QMainWindow,
+    QMessageBox,
     QVBoxLayout,
     QTableView,
     QWidget,
     QStatusBar,
-    # QToolBar,
+    QToolBar,
     QTabWidget,
     QDialog
 )
+
 from PyQt6.QtGui import (
     QStandardItemModel,
     QStandardItem
 )
+
+from database.database_connection import Base, engine, init_db
+from controller.car_t_therapies_controller import therapies
 
 from tab.patient_id import PatientIdTab
 from tab.diagnosis import DiagnosisTab
@@ -34,7 +44,9 @@ from tab.lab_values import LabValuesTab
 from tab.outcomes import OutcomesTab
 from tab.tx_history import TxHistoryTab
 
-from controller.patient_controller import AddPatient
+from model.patient_model import PatientData
+
+from controller.patient_controller import Session, AddPatient, EditPatient
 from controller.diagnosis_controller import AddDiagnosis
 from controller.car_product_controller import AddCARProduct
 from controller.therapy_controller import AddTherapyDetails
@@ -54,7 +66,7 @@ class PyCARToxDBWindow(QMainWindow):
         centralWidget.setLayout(self.generalLayout)
         self._createDisplay()
         self._createMenu()
-        # self._createToolBar()
+        self._createToolBar()
         self._createStatusBar()
 
         self.tab_widget = QTabWidget()
@@ -87,7 +99,6 @@ class PyCARToxDBWindow(QMainWindow):
 
     def _createMenu(self):
         menu = self.menuBar().addMenu("&Menu")
-        menu.addAction("&Exit", self.close)
         menu.addAction("&Add Patient", self.open_add_patient_dialog)
         menu.addAction("&Add Diagnosis", self.open_add_diagnosis_dialog)
         menu.addAction("&Add CAR Product", self.open_add_product_dialog)
@@ -96,11 +107,14 @@ class PyCARToxDBWindow(QMainWindow):
         menu.addAction("&Add Lab Values", self.open_add_lab_values_dialog)
         menu.addAction("&Add Outcome", self.open_add_outcome_dialog)
         menu.addAction("&Add Treatment History", self.open_add_treatment_history_dialog)
+        menu.addAction("&Exit", self.close)
 
-    # def _createToolBar(self):
-    #     tools = QToolBar()
-    #     tools.addAction("Exit", self.close)
-    #     self.addToolBar(tools)
+    def _createToolBar(self):
+        tools = QToolBar()
+        edit_button = QPushButton("Edit Patient", self)
+        edit_button.clicked.connect(self.open_edit_patient_dialog)
+        tools.addWidget(edit_button)
+        self.addToolBar(tools)
 
     def _createStatusBar(self):
         self.status = QStatusBar()
@@ -111,6 +125,19 @@ class PyCARToxDBWindow(QMainWindow):
         dialog = AddPatient()
         dialog.patient_added.connect(self.patient_id.refresh_model)
         dialog.exec()
+
+    def open_edit_patient_dialog(self):
+        patient_id, ok = QInputDialog.getInt(self, "Edit Patient", "Enter Patient ID:")
+        if ok:
+            with Session() as session:
+                patient = session.query(PatientData).filter_by(patient_id=patient_id).one_or_none()
+                if patient:
+                    dialog = EditPatient(patient, session, parent=self)
+                    dialog.patient_edited.connect(self.patient_id.refresh_model)
+                    if dialog.exec():
+                        pass
+                else:
+                    QMessageBox.warning(self, "Not Found", f"No patient with ID {patient_id}")
 
     def open_add_diagnosis_dialog(self):
         dialog = AddDiagnosis()
@@ -149,6 +176,8 @@ class PyCARToxDBWindow(QMainWindow):
 
 def main():
     """PyCARToxDB's main function."""
+    init_db()
+    therapies()
     pycarApp = QApplication([])
     pycarWindow = PyCARToxDBWindow()
     pycarWindow.show()
