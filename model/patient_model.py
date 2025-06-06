@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float, Date
-from sqlalchemy.orm import relationship, backref, sessionmaker
+from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy.orm import relationship
 from database.database_connection import Base, engine
 from model.patient_therapy_model import patient_therapy
 
@@ -13,5 +13,5 @@ class PatientData(Base):
     bio_sex = Column(String)
 
     lab_values = relationship("LabValues", back_populates = "patient", cascade="all, delete-orphan")
-    car_t_therapies = relationship("CART", secondary = patient_therapy, back_populates = "patients")
+    # car_t_therapies = relationship("CART", secondary = patient_therapy, back_populates = "patients")
     

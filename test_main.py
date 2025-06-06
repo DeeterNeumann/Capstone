@@ -11,12 +11,15 @@ from model.outcomes_model import Outcome
 from model.tx_history_model import TreatmentHistory
 from datetime import date
 
+
+# Testing relationships and other functionalities within the database
+
 if __name__ == "__main__":
     init_db()
     Session = sessionmaker(bind = engine)
     session = Session()
 
-    d = PatientData(first_name = "Deeter", last_name = "N", mrn = 58389292, dob = "6/19/1986", bio_sex = "male")
+    d = PatientData(first_name = "Deeter", last_name = "N", mrn = 58389292, dob = date(1986, 4, 17), bio_sex = "male")
     lv1 = LabValues(date = "5/31/2025", IL6 = 3454, patient=d)
     lv2 = LabValues(date = "6/1/2025", IL6 = 6453, patient=d)
 
@@ -26,6 +29,14 @@ if __name__ == "__main__":
     patient = session.query(PatientData).first()
     for lv in patient.lab_values:
         print(f"Date: {lv.date}, IL6: {lv.IL6}")
+
+    # axicabtagene = session.query(CART).filter_by(therapy_name="Yescarta").first()
+    # kymriah = session.query(CART).filter_by(therapy_name="Kymriah").first()
+
+    # new_patient = Patient(name="Bob Smith", mrn="987654", therapies=[yescarta, kymriah])
+    # session.add(new_patient)
+    # session.commit()
+
 
     session.close()
 

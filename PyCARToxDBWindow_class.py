@@ -93,8 +93,6 @@ class PyCARToxDBWindow(QMainWindow):
     def _createDisplay(self):
         self.display = QTableView()
         self.display.setFixedHeight(DISPLAY_HEIGHT)
-        # self.display.setAlignment(Qt.AlignmentFlag.AlignRight)
-        # self.display.setReadOnly(True)
         self.generalLayout.addWidget(self.display)
 
     def _createMenu(self):
@@ -111,9 +109,12 @@ class PyCARToxDBWindow(QMainWindow):
 
     def _createToolBar(self):
         tools = QToolBar()
-        edit_button = QPushButton("Edit Patient", self)
-        edit_button.clicked.connect(self.open_edit_patient_dialog)
-        tools.addWidget(edit_button)
+        pt_edit_button = QPushButton("Edit Patient", self)
+        pt_edit_button.clicked.connect(self.open_edit_patient_dialog)
+        pt_delete_button = QPushButton("Delete Patient", self)
+        pt_delete_button.clicked.connect(self.open_delete_patient_dialog)
+        tools.addWidget(pt_edit_button)
+        tools.addWidget(pt_delete_button)
         self.addToolBar(tools)
 
     def _createStatusBar(self):
@@ -136,6 +137,18 @@ class PyCARToxDBWindow(QMainWindow):
                     dialog.patient_edited.connect(self.patient_id.refresh_model)
                     if dialog.exec():
                         pass
+                else:
+                    QMessageBox.warning(self, "Not Found", f"No patient with ID {patient_id}")
+
+    def open_delete_patient_dialog(self):
+        patient_id, ok = QInputDialog.getInt(self, "Delete Patient", "Enter Patient ID:")
+        if ok:
+            with Session() as session:
+                patient = session.query(PatientData).filter_by(patient_id=patient_id).one_or_none()
+                if patient:
+                    session.delete(patient)
+                    session.commit()
+                    self.patient_id.refresh_model()
                 else:
                     QMessageBox.warning(self, "Not Found", f"No patient with ID {patient_id}")
 

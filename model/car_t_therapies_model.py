@@ -11,4 +11,4 @@ class CART(Base):
     car_t_id = Column(Integer, primary_key = True)
     car_t_cell = Column(String)
 
-    patients = relationship("PatientData", secondary = patient_therapy, back_populates = "car_t_therapies")
+    # patients = relationship("PatientData", secondary = patient_therapy, back_populates = "car_t_therapies")

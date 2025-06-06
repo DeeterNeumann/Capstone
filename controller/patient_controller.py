@@ -94,7 +94,6 @@ class EditPatient(QDialog):
                 self.last_name_edit = QLineEdit(self.row.last_name)
                 self.dob_edit = QDateEdit(calendarPopup = True)
                 self.dob_edit.setDate(QDate(py_date.year, py_date.month, py_date.day))
-                # self.dob_edit.setDate(self.row.dob)
                 self.bio_sex_edit = QLineEdit(self.row.bio_sex)
 
                 self.save_button = QPushButton("Save")
