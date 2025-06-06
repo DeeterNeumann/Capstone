@@ -9,8 +9,9 @@ from model.side_effects_model import SideEffects
 from model.lab_values_model import LabValues
 from model.outcomes_model import Outcome
 from model.tx_history_model import TreatmentHistory
+from model.car_t_therapies_model import CART
+from model.patient_therapy_model import patient_therapy 
 from datetime import date
-
 
 # Testing relationships and other functionalities within the database
 
@@ -30,13 +31,21 @@ if __name__ == "__main__":
     for lv in patient.lab_values:
         print(f"Date: {lv.date}, IL6: {lv.IL6}")
 
-    # axicabtagene = session.query(CART).filter_by(therapy_name="Yescarta").first()
-    # kymriah = session.query(CART).filter_by(therapy_name="Kymriah").first()
+    yescarta = session.query(CART).filter_by(car_t_cell = "axicabtagene ciloleucel").first()
+    kymriah = session.query(CART).filter_by(car_t_cell = "tisagenlecleucel").first()
 
-    # new_patient = Patient(name="Bob Smith", mrn="987654", therapies=[yescarta, kymriah])
-    # session.add(new_patient)
-    # session.commit()
+    new_patient = PatientData(first_name="Bob", mrn="987654", car_t_therapies = [yescarta, kymriah])
+    session.add(new_patient)
+    session.commit()
 
+    # therapies = [
+    #     CART(car_t_cell = "tisagenlecleucel"),
+    #     CART(car_t_cell = "axicabtagene ciloleucel"),
+    #     CART(car_t_cell = "lisocabtagene maraleucel"),
+    #     CART(car_t_cell = "brexucabtagene autoleucel"),
+    #     CART(car_t_cell = "idecabtagene vicleucel"),
+    #     CART(car_t_cell = "ciltacabtagene autoleucel")
+    # ]
 
     session.close()
 

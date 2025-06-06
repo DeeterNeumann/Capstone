@@ -7,9 +7,7 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QLineEdit,
     QVBoxLayout,
-    QPushButton,
-    QMessageBox,
-    QWidget
+    QMessageBox
 )
 
 from PyQt6.QtCore import pyqtSignal

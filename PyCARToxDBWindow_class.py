@@ -45,6 +45,7 @@ from tab.outcomes import OutcomesTab
 from tab.tx_history import TxHistoryTab
 
 from model.patient_model import PatientData
+from model.patient_therapy_model import patient_therapy
 
 from controller.patient_controller import Session, AddPatient, EditPatient
 from controller.diagnosis_controller import AddDiagnosis

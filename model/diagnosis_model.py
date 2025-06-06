@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float
-from sqlalchemy.orm import relationship, backref
-from database.database_connection import Base, engine
+from sqlalchemy import Column, Integer, String
+from database.database_connection import Base
 
 class Diagnosis(Base):
     __tablename__ = "Diagnosis"

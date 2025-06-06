@@ -1,9 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float, insert
-from sqlalchemy.orm import relationship, backref, sessionmaker
-from database.database_connection import Base, engine
-from model.patient_model import PatientData
-from model.patient_therapy_model import patient_therapy
-
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from database.database_connection import Base
 
 # junction table 
 class CART(Base):
@@ -11,4 +8,4 @@ class CART(Base):
     car_t_id = Column(Integer, primary_key = True)
     car_t_cell = Column(String)
 
-    # patients = relationship("PatientData", secondary = patient_therapy, back_populates = "car_t_therapies")
+    patients = relationship("PatientData", secondary = "Patient_Therapy", back_populates = "car_t_therapies")

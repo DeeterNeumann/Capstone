@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float
-from sqlalchemy.orm import relationship, backref, sessionmaker
-from database.database_connection import Base, engine
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from database.database_connection import Base
 
 class SideEffects(Base):
     __tablename__ = "Side_Effects"

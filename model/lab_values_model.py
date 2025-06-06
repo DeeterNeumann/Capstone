@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Float
-from sqlalchemy.orm import relationship, backref
-from database.database_connection import Base, engine
-from model.patient_model import PatientData
+from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy.orm import relationship
+from database.database_connection import Base
 
 
 class LabValues(Base):
